@@ -93,17 +93,31 @@ else:
 #coloum chart for category and region
 category_df=filtered_df.groupby(by=["Category"], as_index=False)["Sales"].sum()
 #how can create the chart
+
 with col1:
-    st.subheader("Category Wise Sales")
-    fig=px.bar(category_df, x="Category", y="Sales", text=['${:,.2f}'.format(x) for x in category_df["Sales"]],
-               template="seaborn")
-    st.plotly_chart(fig,use_container_width=True, height=200)
+    with st.expander("Category View Data"):
+        st.write(category_df.style.background_gradient(cmap="Blues"))
+        csv = category_df.to_csv(index=False).encode('utf-8')
+        st.download_button("Download Data", data=csv, file_name="Category.csv", mime="text/csv")
 
 with col2:
-    st.subheader("Region Wise Sales")
-    fig=px.pie(filtered_df, values="Sales", names="Region", hole=0.5)
-    fig.update_traces(text=filtered_df["Region"], textposition="outside")
-    st.plotly_chart(fig,use_container_width=True)
+    with st.expander("Region View Data"):
+        region_df = filtered_df.groupby("Region", as_index=False)["Sales"].sum()
+        st.write(region_df.style.background_gradient(cmap="Oranges"))
+        csv = region_df.to_csv(index=False).encode('utf-8')
+        st.download_button("Download Data", data=csv, file_name="Region.csv", mime="text/csv")
+
+# with col1:
+#     st.subheader("Category Wise Sales")
+#     fig=px.bar(category_df, x="Category", y="Sales", text=['${:,.2f}'.format(x) for x in category_df["Sales"]],
+#                template="seaborn")
+#     st.plotly_chart(fig,use_container_width=True, height=200)
+
+# with col2:
+#     st.subheader("Region Wise Sales")
+#     fig=px.pie(filtered_df, values="Sales", names="Region", hole=0.5)
+#     fig.update_traces(text=filtered_df["Region"], textposition="outside")
+#     st.plotly_chart(fig,use_container_width=True)
 
 
 cl1,cl2=st.columns(2)
